@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import { Button, Row, Col } from "react-bootstrap";
 
 function App() {
-  const [artStyle, setArtStyle] = useState("Neoclassicism");
+  const [artStyle, setArtStyle] = useState("Avant-garde");
   const [cardNum, setCardNum] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
   const [artPieces, setArtPieces] = useState([]);
@@ -28,6 +29,33 @@ function App() {
     }
   };
 
+  const fetchRandomPieces = async () => {
+    const pageIdx = Math.floor(Math.random() * totalPages) + 1;
+    const url = `https://api.artic.edu/api/v1/artworks/search?query[match][style_titles]=${artStyle}&limit=${cardNum}&page=${pageIdx}`;
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "AIC-User_Agent": `art-card-game (${import.meta.env.CONTACT_EMAIL})`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch artworks: ${response.status}`);
+      }
+
+      const res = await response.json();
+      const imagePromises = res.data.map((artwork) =>
+        fetchArtworkDetails(artwork)
+      );
+      const imageResults = await Promise.all(imagePromises);
+      const validImages = imageResults.filter((image) => image !== null);
+      setArtPieces(validImages);
+    } catch (err) {
+      console.err(err);
+    }
+  };
+
   const fetchArt = async () => {
     setLoading(true);
     setError(null);
@@ -37,7 +65,7 @@ function App() {
     try {
       const response = await fetch(url, {
         headers: {
-          "AIC-User_Agent": "art-card-game (emmanuel12310@berkeley.edu)",
+          "AIC-User_Agent": `art-card-game (${import.meta.env.CONTACT_EMAIL})`,
         },
       });
       if (!response.ok) {
@@ -45,14 +73,8 @@ function App() {
       }
 
       const res = await response.json();
-      setTotalPages(Math.ceil(res.pagination.total / cardNum));
-
-      const imagePromises = res.data.map((artwork) =>
-        fetchArtworkDetails(artwork)
-      );
-      const imageResults = await Promise.all(imagePromises);
-      const validImages = imageResults.filter((image) => image !== null);
-      setArtPieces(validImages);
+      setTotalPages(res.pagination.total_pages);
+      fetchRandomPieces();
     } catch (err) {
       console.error("Error in fetchArt:", err.message);
       setError(err.message);
@@ -72,12 +94,11 @@ function App() {
   return (
     <>
       <h1>Art Memory Card Game</h1>
-      <div className="card">
+      <div className="container">
         {error && <p>Error: {error}</p>}
-        {loading && <p>Loading artwork...</p>}
-        <button onClick={fetchArt} disabled={loading}>
+        <Button onClick={fetchArt} disabled={loading}>
           {loading ? "Loading..." : "Refresh Art"}
-        </button>
+        </Button>
         {totalPages > 0 && (
           <p>
             Found {totalPages} pages of {artStyle} artwork
@@ -86,6 +107,24 @@ function App() {
         {artPieces.length > 0 && (
           <div>
             <p>Loaded {artPieces.length} images</p>
+            <div className="game-container">
+              <Row>
+                {artPieces.map((piece, idx) => (
+                  <Col key={idx} xs={6} sm={4} className="mb-3">
+                    <div className="art-card">
+                      <div className="art-card-inner">
+                        <img
+                          src={piece}
+                          crossOrigin="anonymous"
+                          alt={`Artwork ${idx + 1}`}
+                          className="art-image"
+                        />
+                      </div>
+                    </div>
+                  </Col>
+                ))}
+              </Row>
+            </div>
           </div>
         )}
       </div>
