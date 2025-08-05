@@ -3,7 +3,7 @@ import "./App.css";
 import { Button, Row, Col } from "react-bootstrap";
 
 function App() {
-  const [artStyle, setArtStyle] = useState("Avant-garde");
+  const [artStyle, setArtStyle] = useState("Modernism");
   const [cardNum, setCardNum] = useState(6);
   const [totalPages, setTotalPages] = useState(0);
   const [artPieces, setArtPieces] = useState([]);
@@ -22,7 +22,7 @@ function App() {
         return null;
       }
 
-      return `${res.config.iiif_url}/${res.data.image_id}/full/843,/0/default.jpg`;
+      return `${res.config.iiif_url}/${res.data.image_id}/full/pct:100/0/default.jpg`;
     } catch (err) {
       console.error(`Error fetching artwork ${artwork.id}:`, err.message);
       return null;
@@ -30,7 +30,8 @@ function App() {
   };
 
   const fetchRandomPieces = async () => {
-    const pageIdx = Math.floor(Math.random() * totalPages) + 1;
+    const maxPage = Math.min(totalPages, 100);
+    const pageIdx = Math.floor(Math.random() * maxPage) + 1;
     const url = `https://api.artic.edu/api/v1/artworks/search?query[match][style_titles]=${artStyle}&limit=${cardNum}&page=${pageIdx}`;
 
     try {
@@ -50,9 +51,11 @@ function App() {
       );
       const imageResults = await Promise.all(imagePromises);
       const validImages = imageResults.filter((image) => image !== null);
-      setArtPieces(validImages);
+      const cardImages = [...validImages, ...validImages].sort(() => Math.random() - 0.5);
+      setArtPieces(cardImages);
     } catch (err) {
-      console.err(err);
+      console.error("Error in fetchRandomPieces:", err);
+      setError("Failed to fetch artwork images");
     }
   };
 
@@ -110,7 +113,7 @@ function App() {
             <div className="game-container">
               <Row>
                 {artPieces.map((piece, idx) => (
-                  <Col key={idx} xs={6} sm={4} className="mb-3">
+                  <Col key={idx} xs={4} sm={3} className="mb-3">
                     <div className="art-card">
                       <div className="art-card-inner">
                         <img
