@@ -2,77 +2,17 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import { Row, Col } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
+import { fetchArtworkCount, fetchRandomArtworks } from "./utils/artApi";
 
 function App() {
   const [artStyle, setArtStyle] = useState("Impressionism");
-  const [cardNum, setCardNum] = useState(8);
-  const [totalPages, setTotalPages] = useState(0);
   const [artPieces, setArtPieces] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [imagesLoaded, setImagesLoaded] = useState(0);
   const [totalImages, setTotalImages] = useState(0);
-  const artStyleTypes = [
-    "Impressionism",
-    "Modernism",
-    "Avant-garde",
-    "Surrealism",
-    "Pop",
-  ];
-
-  const fetchArtworkDetails = async (artwork) => {
-    try {
-      const response = await fetch(artwork.api_link);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch artwork details: ${response.status}`);
-      }
-
-      const res = await response.json();
-      if (!res.data.image_id) {
-        return null;
-      }
-
-      return `${res.config.iiif_url}/${res.data.image_id}/full/200,/0/default.jpg`;
-    } catch (err) {
-      console.error(`Error fetching artwork ${artwork.id}:`, err.message);
-      return null;
-    }
-  };
-
-  const fetchRandomPieces = async () => {
-    const maxPage = Math.min(totalPages, 100);
-    const pageIdx = Math.floor(Math.random() * maxPage) + 1;
-    const url = `https://api.artic.edu/api/v1/artworks/search?query[match][style_titles]=${artStyle}&limit=${cardNum}&page=${pageIdx}`;
-
-    try {
-      const response = await fetch(url, {
-        headers: {
-          "AIC-User_Agent": `art-card-game (${import.meta.env.CONTACT_EMAIL})`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch artworks: ${response.status}`);
-      }
-
-      const res = await response.json();
-      const imagePromises = res.data.map((artwork) =>
-        fetchArtworkDetails(artwork)
-      );
-      const imageResults = await Promise.all(imagePromises);
-      const validImages = imageResults.filter((image) => image !== null);
-      const cardImages = [...validImages, ...validImages].sort(
-        () => Math.random() - 0.5
-      );
-
-      setImagesLoaded(0);
-      setTotalImages(cardImages.length);
-      setArtPieces(cardImages);
-    } catch (err) {
-      console.error("Error in fetchRandomPieces:", err);
-      setError("Failed to fetch artwork images");
-    }
-  };
+  const ART_STYLE_TYPES = ["Impressionism", "Modernism", "Avant-garde", "Pop"];
+  const NUM_CARDS = 8;
 
   const fetchArt = async () => {
     setLoading(true);
@@ -80,24 +20,15 @@ function App() {
     setImagesLoaded(0);
     setTotalImages(0);
 
-    const url = `https://api.artic.edu/api/v1/artworks/search?query[match][style_titles]=${artStyle}&limit=${cardNum}`;
-
     try {
-      const response = await fetch(url, {
-        headers: {
-          "AIC-User_Agent": `art-card-game (${import.meta.env.CONTACT_EMAIL})`,
-        },
-      });
-      if (!response.ok) {
-        throw new Error(`Failed to fetch artworks: ${response.status}`);
-      }
-
-      const res = await response.json();
-      setTotalPages(res.pagination.total_pages);
-      fetchRandomPieces();
+      const numPages = await fetchArtworkCount(artStyle, NUM_CARDS);
+      const artworks = await fetchRandomArtworks(artStyle, NUM_CARDS, numPages);
+      setArtPieces(artworks);
+      setTotalImages(artworks.length);
     } catch (err) {
-      console.error("Error in fetchArt:", err.message);
-      setError(err.message);
+      console.error("Failed to fetch art:", err);
+      setError("Failed to load artwork. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
@@ -122,56 +53,57 @@ function App() {
 
   useEffect(() => {
     fetchArt();
-  }, [artStyle, cardNum]);
+  }, [artStyle]);
 
   return (
     <>
-      <h1>Art Memory Card Game</h1>
+      <h1>Art Memory Matching</h1>
+
       <Form.Select
         aria-label="art-select"
         value={artStyle}
         onChange={(e) => setArtStyle(e.target.value)}
       >
-        {artStyleTypes.map((style, idx) => (
+        {ART_STYLE_TYPES.map((style, idx) => (
           <option key={idx} value={style}>
             {style}
           </option>
         ))}
       </Form.Select>
+
       <div className="container">
         {error && <p>Error: {error}</p>}
-        <button onClick={fetchArt} disabled={loading}>
+        <button onClick={fetchArt} disabled={loading} className="my-3">
           {loading ? "Loading..." : "Refresh Art"}
         </button>
-        {artPieces.length > 0 && (
-          <div>
-            {loading && (
-              <p>
-                Loading images... ({imagesLoaded}/{totalImages})
-              </p>
-            )}
-            <div className="game-container">
-              <Row>
-                {artPieces.map((piece, idx) => (
-                  <Col key={idx} xs={3} className="mb-3">
-                    <div className="art-card">
-                      <div className="art-card-inner">
-                        <img
-                          src={piece}
-                          crossOrigin="anonymous"
-                          alt={`Artwork ${idx + 1}`}
-                          className="art-image"
-                          onLoad={handleImageLoad}
-                          onError={handleImageError}
-                        />
-                      </div>
+
+        <div className="">
+          <div className="game-container">
+            <Row>
+              {artPieces.map((piece, idx) => (
+                <Col key={idx} xs={3} className="mb-3">
+                  <div className="art-card">
+                    <div className="art-card-inner">
+                      <img
+                        src={piece["imageURL"]}
+                        crossOrigin="anonymous"
+                        alt={`Artwork ${idx + 1}`}
+                        className="art-image"
+                        onLoad={handleImageLoad}
+                        onError={handleImageError}
+                      />
                     </div>
-                  </Col>
-                ))}
-              </Row>
-            </div>
+                  </div>
+                </Col>
+              ))}
+            </Row>
           </div>
-        )}
+          {loading && (
+            <p>
+              Loading images... ({imagesLoaded}/{totalImages})
+            </p>
+          )}
+        </div>
       </div>
     </>
   );
