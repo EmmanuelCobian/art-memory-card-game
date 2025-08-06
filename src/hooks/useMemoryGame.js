@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-const useMemoryGame = (artPieces) => {
+/** hook for handling the state management of the game
+ * 
+ * @param {Array} artPieces - list of art pieces fetched from the api
+ * @returns gamestate and functions that are used for handling the changes of a state during any given game
+ */
+export const useMemoryGame = (artPieces) => {
   const [gameState, setGameState] = useState({
     cards: [],
     flippedCards: [],
@@ -22,5 +27,3 @@ const useMemoryGame = (artPieces) => {
 
   return { gameState, flipCard, resetGame, checkForMatch, gameStats}
 };
-
-export default useMemoryGame;

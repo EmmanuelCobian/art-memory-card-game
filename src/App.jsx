@@ -1,93 +1,36 @@
-import { useState, useEffect } from "react";
 import "./App.css";
 import { Row, Col } from "react-bootstrap";
-import { fetchArtworkCount, fetchRandomArtworks } from "./utils/artApi";
 import GameHeader from "./components/GameHeader";
-import useMemoryGame from "./hooks/useMemoryGame";
+import { useMemoryGame } from "./hooks/useMemoryGame";
+import { useArtData } from "./hooks/useArtData";
 
 function App() {
-  const [artStyle, setArtStyle] = useState("Impressionism");
-  const [artPieces, setArtPieces] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [imagesLoaded, setImagesLoaded] = useState(0);
-  const [totalImages, setTotalImages] = useState(0);
-  const NUM_CARDS = 8;
-
-  const {
-    gameState,
-    flipCard,
-    resetGame,
-    checkForMatch,
-    gameStats,
-  } = useMemoryGame(artPieces)
-
-  const fetchArt = async () => {
-    setLoading(true);
-    setError(null);
-    setImagesLoaded(0);
-    setTotalImages(0);
-
-    try {
-      const numPages = await fetchArtworkCount(artStyle, NUM_CARDS);
-      const artworks = await fetchRandomArtworks(artStyle, NUM_CARDS, numPages);
-      setArtPieces(artworks);
-      setTotalImages(artworks.length);
-    } catch (err) {
-      console.error("Failed to fetch art:", err);
-      setError("Failed to load artwork. Please try again.");
-      setLoading(false);
-    }
-  };
-
-  const handleImageLoad = () => {
-    setImagesLoaded((prev) => prev + 1);
-  };
-
-  const handleImageError = () => {
-    setImagesLoaded((prev) => prev + 1);
-  };
-
-  const handleCardClick = (index) => {
-    setArtPieces((prev) =>
-      prev.map((piece, idx) =>
-        idx === index ? { ...piece, flipped: !piece.flipped } : piece
-      )
-    );
-  };
-
-  useEffect(() => {
-    if (totalImages > 0 && imagesLoaded === totalImages) {
-      setLoading(false);
-    }
-  }, [imagesLoaded, totalImages]);
-
-  useEffect(() => {
-    fetchArt();
-  }, []);
-
-  useEffect(() => {
-    fetchArt();
-  }, [artStyle]);
+  const artData = useArtData()
+  const gameLogic = useMemoryGame(artData.artPieces)
 
   return (
     <>
-      <GameHeader onStyleChange={setArtStyle} artStyle={artStyle}/>
+      <GameHeader onStyleChange={artData.setArtStyle} artStyle={artData.artStyle}/>
 
       <div className="container">
-        {error && <p>Error: {error}</p>}
-        <button onClick={fetchArt} disabled={loading} className="my-3">
-          {loading ? "Loading..." : "New Game"}
+        {artData.error && <p>Error: {artData.error}</p>}
+        <button onClick={artData.fetchArt} disabled={!artData.isFullyLoaded} className="my-3">
+          {artData.isFullyLoaded ? "New Game" : "Loading..."}
         </button>
 
         <div className="">
-          <div className="game-container">
+          {!artData.isFullyLoaded && (
+            <p>
+              Loading progress {artData.loadingProgress}%
+            </p>
+          )}
+          <div className="game-container mt-2">
             <Row>
-              {artPieces.map((piece, idx) => (
+              {artData.artPieces.map((piece, idx) => (
                 <Col key={idx} xs={3} className="mb-3">
                   <div
                     className={`art-card ${piece["flipped"] ? "flipped" : ""}`}
-                    onClick={() => handleCardClick(idx)}
+                    onClick={() => artData.handleCardClick(idx)}
                   >
                     <div className="art-card-inner">
                       <div className="art-card-front"></div>
@@ -97,8 +40,8 @@ function App() {
                           crossOrigin="anonymous"
                           alt={`Artwork ${idx + 1}`}
                           className="art-image"
-                          onLoad={handleImageLoad}
-                          onError={handleImageError}
+                          onLoad={artData.handleImageLoad}
+                          onError={artData.handleImageError}
                         />
                       </div>
                     </div>
@@ -107,11 +50,6 @@ function App() {
               ))}
             </Row>
           </div>
-          {loading && (
-            <p>
-              Loading images... ({imagesLoaded}/{totalImages})
-            </p>
-          )}
         </div>
       </div>
     </>
