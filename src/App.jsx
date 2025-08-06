@@ -28,7 +28,6 @@ function App() {
     } catch (err) {
       console.error("Failed to fetch art:", err);
       setError("Failed to load artwork. Please try again.");
-    } finally {
       setLoading(false);
     }
   };
@@ -40,6 +39,14 @@ function App() {
   const handleImageError = () => {
     setImagesLoaded((prev) => prev + 1);
   };
+
+  const handleCardClick = (index) => {
+    setArtPieces((prev) => 
+      prev.map((piece, idx) => 
+        idx === index ? { ...piece, flipped: !piece.flipped } : piece
+      )
+    )
+  }
 
   useEffect(() => {
     if (totalImages > 0 && imagesLoaded === totalImages) {
@@ -59,17 +66,19 @@ function App() {
     <>
       <h1>Art Memory Matching</h1>
 
-      <Form.Select
-        aria-label="art-select"
-        value={artStyle}
-        onChange={(e) => setArtStyle(e.target.value)}
-      >
-        {ART_STYLE_TYPES.map((style, idx) => (
-          <option key={idx} value={style}>
-            {style}
-          </option>
-        ))}
-      </Form.Select>
+      <div className="container">
+        <Form.Select
+          aria-label="art-select"
+          value={artStyle}
+          onChange={(e) => setArtStyle(e.target.value)}
+        >
+          {ART_STYLE_TYPES.map((style, idx) => (
+            <option key={idx} value={style}>
+              {style}
+            </option>
+          ))}
+        </Form.Select>
+      </div>
 
       <div className="container">
         {error && <p>Error: {error}</p>}
@@ -82,16 +91,19 @@ function App() {
             <Row>
               {artPieces.map((piece, idx) => (
                 <Col key={idx} xs={3} className="mb-3">
-                  <div className="art-card">
+                  <div className={`art-card ${piece['flipped'] ? 'flipped' : ''}`} onClick={() => handleCardClick(idx)}>
                     <div className="art-card-inner">
-                      <img
-                        src={piece["imageURL"]}
-                        crossOrigin="anonymous"
-                        alt={`Artwork ${idx + 1}`}
-                        className="art-image"
-                        onLoad={handleImageLoad}
-                        onError={handleImageError}
-                      />
+                      <div className="art-card-front"></div>
+                      <div className="art-card-back">
+                        <img
+                          src={piece["imageURL"]}
+                          crossOrigin="anonymous"
+                          alt={`Artwork ${idx + 1}`}
+                          className="art-image"
+                          onLoad={handleImageLoad}
+                          onError={handleImageError}
+                        />
+                      </div>
                     </div>
                   </div>
                 </Col>

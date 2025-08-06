@@ -12,34 +12,50 @@
 .art-card {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
-  background-color: #f8f9fa;
-}
-
-.art-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  min-height: 100px;
 }
 
 .art-card-inner {
   width: 100%;
   height: 100%;
   position: relative;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.art-card-front,
+.art-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
   overflow: hidden;
+  border-radius: 10px;
+}
+
+.art-card-front {
+  background-color: blue;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.art-card-back {
+  transform: rotateY(180deg);
+  background-color: white;
+}
+
+.art-card.flipped .art-card-inner {
+  transform: rotateY(180deg);
 }
 
 .art-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  transition: transform 0.3s ease;
-}
-
-.art-card:hover .art-image {
-  transform: scale(1.05);
+  object-position: top;
 }
