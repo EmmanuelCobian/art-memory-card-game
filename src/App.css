@@ -1,12 +1,24 @@
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0;
   text-align: center;
+  min-height: 100vh;
 }
 
 .game-container {
   max-width: 800px;
+  background-color: var(--bg-secondary);
+  border-radius: 15px;
+  padding: 1rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
 }
 
 .art-card {
@@ -16,6 +28,7 @@
   overflow: hidden;
   cursor: pointer;
   min-height: 100px;
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .art-card-inner {
@@ -37,16 +50,18 @@
 }
 
 .art-card-front {
-  background-color: blue;
+  background-color: var(--card-front);
   display: flex;
   justify-content: center;
   align-items: center;
   color: white;
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 .art-card-back {
   transform: rotateY(180deg);
-  background-color: white;
+  background-color: var(--card-back);
 }
 
 .art-card.flipped .art-card-inner {
@@ -58,4 +73,10 @@
   height: 100%;
   object-fit: cover;
   object-position: top;
+}
+
+.alert {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border-color) !important;
 }

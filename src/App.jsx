@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import { Row, Col } from "react-bootstrap";
-import Form from "react-bootstrap/Form";
 import { fetchArtworkCount, fetchRandomArtworks } from "./utils/artApi";
+import GameHeader from "./components/GameHeader";
+import useMemoryGame from "./hooks/useMemoryGame";
 
 function App() {
   const [artStyle, setArtStyle] = useState("Impressionism");
@@ -11,8 +12,15 @@ function App() {
   const [error, setError] = useState(null);
   const [imagesLoaded, setImagesLoaded] = useState(0);
   const [totalImages, setTotalImages] = useState(0);
-  const ART_STYLE_TYPES = ["Impressionism", "Modernism", "Avant-garde", "Pop"];
   const NUM_CARDS = 8;
+
+  const {
+    gameState,
+    flipCard,
+    resetGame,
+    checkForMatch,
+    gameStats,
+  } = useMemoryGame(artPieces)
 
   const fetchArt = async () => {
     setLoading(true);
@@ -41,12 +49,12 @@ function App() {
   };
 
   const handleCardClick = (index) => {
-    setArtPieces((prev) => 
-      prev.map((piece, idx) => 
+    setArtPieces((prev) =>
+      prev.map((piece, idx) =>
         idx === index ? { ...piece, flipped: !piece.flipped } : piece
       )
-    )
-  }
+    );
+  };
 
   useEffect(() => {
     if (totalImages > 0 && imagesLoaded === totalImages) {
@@ -64,26 +72,12 @@ function App() {
 
   return (
     <>
-      <h1>Art Memory Matching</h1>
-
-      <div className="container">
-        <Form.Select
-          aria-label="art-select"
-          value={artStyle}
-          onChange={(e) => setArtStyle(e.target.value)}
-        >
-          {ART_STYLE_TYPES.map((style, idx) => (
-            <option key={idx} value={style}>
-              {style}
-            </option>
-          ))}
-        </Form.Select>
-      </div>
+      <GameHeader onStyleChange={setArtStyle} artStyle={artStyle}/>
 
       <div className="container">
         {error && <p>Error: {error}</p>}
         <button onClick={fetchArt} disabled={loading} className="my-3">
-          {loading ? "Loading..." : "Refresh Art"}
+          {loading ? "Loading..." : "New Game"}
         </button>
 
         <div className="">
@@ -91,7 +85,10 @@ function App() {
             <Row>
               {artPieces.map((piece, idx) => (
                 <Col key={idx} xs={3} className="mb-3">
-                  <div className={`art-card ${piece['flipped'] ? 'flipped' : ''}`} onClick={() => handleCardClick(idx)}>
+                  <div
+                    className={`art-card ${piece["flipped"] ? "flipped" : ""}`}
+                    onClick={() => handleCardClick(idx)}
+                  >
                     <div className="art-card-inner">
                       <div className="art-card-front"></div>
                       <div className="art-card-back">
