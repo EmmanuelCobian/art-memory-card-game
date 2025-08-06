@@ -92,7 +92,7 @@ export const useArtData = () => {
     handleImageLoad,
     handleImageError,
     handleCardClick,
-    isFullyLoaded: totalImages > 0 && imagesLoaded === totalImages,
+    isFullyLoaded: totalImages > 0 && imagesLoaded === totalImages && !loading,
     loadingProgress: totalImages > 0 ? (imagesLoaded / totalImages) * 100 : 0,
   };
 };
