@@ -36,11 +36,11 @@ function GameHeader({
           {isFullyLoaded ? "Restart" : "Loading..."}
         </button>
 
-        <div className="ms-auto">
+        <div className="ms-auto mt-3">
           <p>Moves: {moves}</p>
         </div>
 
-        <div className="">
+        <div className="mt-3">
           <p>Timer: {timer.formattedTime}</p>
         </div>
       </Stack>

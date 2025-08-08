@@ -10,9 +10,9 @@ import { useTimer } from "./useTimer";
 /** hook for handling the state management of the game
  *
  * @param {Array} artPieces - list of art pieces fetched from the api
- * @param {Boolean} isFullyLoaded - indicator whether all the images are loaded in or not
- * @returns gamestate and functions that are used for handling the changes of a state during any given game
- */
+ * @param {Boolean} isFullyLoaded - whether all the images are loaded in or not
+ * @returns game state and control functions
+*/
 export const useMemoryGame = (artPieces, isFullyLoaded) => {
   const [gameState, setGameState] = useState({
     cards: [],

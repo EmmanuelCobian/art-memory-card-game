@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { fetchArtworkCount, fetchRandomArtworks } from "../utils/artApi";
 
 /**
- * function for handling the state of art pieces before starting a game. Handles the logic of getting art and loading states.
+ * hook for handling the state of art pieces before starting a game.
  * 
  * @returns functions and variables used by other components to view and handle the state of art pieces
  */
