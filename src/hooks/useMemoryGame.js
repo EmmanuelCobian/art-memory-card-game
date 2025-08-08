@@ -5,6 +5,7 @@ import {
   checkMatch,
   isGameWon,
 } from "../utils/gameLogic";
+import { useTimer } from "./useTimer";
 
 /** hook for handling the state management of the game
  *
@@ -18,8 +19,8 @@ export const useMemoryGame = (artPieces, isFullyLoaded) => {
     flippedCards: [],
     moves: 0,
     isGameWon: false,
-    isGameStarted: false,
   });
+  const timer = useTimer(gameState.isGameWon, gameState.moves);
 
   useEffect(() => {
     if (artPieces) {
@@ -30,20 +31,22 @@ export const useMemoryGame = (artPieces, isFullyLoaded) => {
           flippedCards: [],
           moves: 0,
           isGameWon: false,
-          isGameStarted: true,
         });
       }
     }
   }, [artPieces]);
 
   const handleCardClick = (cardIndex) => {
-    // Don't allow card clicks if images are still loading
     if (!isFullyLoaded) {
       return;
     }
-    
+
     if (gameState.isGameWon || gameState.cards[cardIndex]?.isMatched) {
       return;
+    }
+
+    if (gameState.moves == 0) {
+      timer.startTimer();
     }
 
     if (gameState.flippedCards.length == 2) {
@@ -133,8 +136,23 @@ export const useMemoryGame = (artPieces, isFullyLoaded) => {
     }
   };
 
+  const restart = () => {
+    if (artPieces) {
+      const gameCards = createGameCards(artPieces);
+      setGameState({
+        cards: gameCards,
+        flippedCards: [],
+        moves: 0,
+        isGameWon: false,
+      });
+      timer.resetTimer();
+    }
+  };
+
   return {
     gameState,
     handleCardClick,
+    restart,
+    timer,
   };
 };

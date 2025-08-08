@@ -11,35 +11,12 @@ function App() {
 
   return (
     <>
-      <GameHeader
-        onStyleChange={artData.setArtStyle}
-        artStyle={artData.artStyle}
-      />
+      <div className="container pt-4" id="title">
+        <h1>Art Memory Game</h1>
+      </div>
 
-      <div className="container">
-        <button
-          onClick={() => artData.fetchArt()}
-          disabled={!artData.isFullyLoaded}
-          className="my-3"
-        >
-          {artData.isFullyLoaded ? "New Game" : "Loading..."}
-        </button>
-
-        <div className="">
-          {gameLogic.gameState.isGameStarted && (
-            <div className="game-info">
-              <p>Moves: {gameLogic.gameState.moves}</p>
-              {gameLogic.gameState.isGameWon && (
-                <p className="text-success">
-                  🎉 Congratulations! You won in {gameLogic.gameState.moves}{" "}
-                  moves!
-                </p>
-              )}
-            </div>
-          )}
-
-          <GameBoard artData={artData} gameLogic={gameLogic} />
-        </div>
+      <div id="game-board" className="container py-4">
+        <GameBoard artData={artData} gameLogic={gameLogic} />
       </div>
 
       <footer id="footer" className="footer">
