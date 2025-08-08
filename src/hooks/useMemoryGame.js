@@ -12,7 +12,7 @@ import {
  * @param {Boolean} isFullyLoaded - indicator whether all the images are loaded in or not
  * @returns gamestate and functions that are used for handling the changes of a state during any given game
  */
-export const useMemoryGame = (artPieces) => {
+export const useMemoryGame = (artPieces, isFullyLoaded) => {
   const [gameState, setGameState] = useState({
     cards: [],
     flippedCards: [],
@@ -37,6 +37,11 @@ export const useMemoryGame = (artPieces) => {
   }, [artPieces]);
 
   const handleCardClick = (cardIndex) => {
+    // Don't allow card clicks if images are still loading
+    if (!isFullyLoaded) {
+      return;
+    }
+    
     if (gameState.isGameWon || gameState.cards[cardIndex]?.isMatched) {
       return;
     }

@@ -14,10 +14,12 @@ body {
 }
 
 .game-container {
-  max-width: 800px;
+  max-width: 650px;
   background-color: var(--bg-secondary);
   border-radius: 15px;
-  padding: 1rem;
+  padding-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   box-shadow: 0 4px 6px var(--shadow-color);
 }
 

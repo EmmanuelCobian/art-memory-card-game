@@ -1,8 +1,9 @@
 import "./App.css";
-import { Row, Col } from "react-bootstrap";
 import GameHeader from "./components/GameHeader";
+import GameBoard from "./components/GameBoard";
 import { useMemoryGame } from "./hooks/useMemoryGame";
 import { useArtData } from "./hooks/useArtData";
+import { EnvelopeFill, Github, Linkedin } from "react-bootstrap-icons";
 
 function App() {
   const artData = useArtData();
@@ -16,7 +17,6 @@ function App() {
       />
 
       <div className="container">
-        {artData.error && <p>Error: {artData.error}</p>}
         <button
           onClick={() => artData.fetchArt()}
           disabled={!artData.isFullyLoaded}
@@ -26,10 +26,6 @@ function App() {
         </button>
 
         <div className="">
-          {!artData.isFullyLoaded && (
-            <p>Loading progress {artData.loadingProgress}%</p>
-          )}
-
           {gameLogic.gameState.isGameStarted && (
             <div className="game-info">
               <p>Moves: {gameLogic.gameState.moves}</p>
@@ -42,36 +38,30 @@ function App() {
             </div>
           )}
 
-          <div className="game-container mt-2">
-            <Row>
-              {gameLogic.gameState.cards.map((card, idx) => (
-                <Col key={card.id} xs={3} className="mb-3">
-                  <div
-                    className={`art-card ${
-                      card.isFlipped || card.isMatched ? "flipped" : ""
-                    }`}
-                    onClick={() => gameLogic.handleCardClick(idx)}
-                  >
-                    <div className="art-card-inner">
-                      <div className="art-card-front"></div>
-                      <div className="art-card-back">
-                        <img
-                          src={card.imageURL}
-                          crossOrigin="anonymous"
-                          alt={`Artwork ${idx + 1}`}
-                          className="art-image"
-                          onLoad={artData.handleImageLoad}
-                          onError={artData.handleImageError}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </Col>
-              ))}
-            </Row>
-          </div>
+          <GameBoard artData={artData} gameLogic={gameLogic} />
         </div>
       </div>
+
+      <footer id="footer" className="footer">
+        <p>Made by Emmanuel Cobian</p>
+        <a
+          className="socials"
+          href="https://github.com/EmmanuelCobian"
+          target="_blank"
+        >
+          <Github className="fs-2 me-2" color="#A2AF9B" />
+        </a>
+        <a
+          className="socials"
+          href="https://www.linkedin.com/in/emmanuel-cobian/"
+          target="_blank"
+        >
+          <Linkedin className="fs-2 me-2" color="#A2AF9B" />
+        </a>
+        <a className="socials" href="mailto:emmanuel12310@berkeley.edu">
+          <EnvelopeFill className="fs-2" color="#A2AF9B" />
+        </a>
+      </footer>
     </>
   );
 }
