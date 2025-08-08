@@ -41,7 +41,7 @@ function GameHeader({
         </div>
 
         <div className="mt-3">
-          <p>Timer: {timer.formattedTime}</p>
+          <p>Timer: {timer?.formattedTime || "00:00"}</p>
         </div>
       </Stack>
     </>

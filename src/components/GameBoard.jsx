@@ -1,9 +1,15 @@
 import GameCard from "./GameCard";
 import GameHeader from "./GameHeader";
+import VictoryModal from "./VictoryModal";
 import { Row, Col } from "react-bootstrap";
 import Spinner from "react-bootstrap/Spinner";
 
 function GameBoard({ gameLogic, artData }) {
+  const handleNewGame = () => {
+    gameLogic.restart();
+    artData.fetchArt();
+  };
+
   return (
     <>
       <GameHeader
@@ -14,7 +20,7 @@ function GameBoard({ gameLogic, artData }) {
         moves={gameLogic.gameState.moves}
         timer={gameLogic.timer}
       />
-      
+
       <div className="game-container mt-2">
         {gameLogic.gameState.cards.length == 0 && (
           <Spinner animation="border" role="status">
@@ -38,6 +44,13 @@ function GameBoard({ gameLogic, artData }) {
           ))}
         </Row>
       </div>
+
+      <VictoryModal
+        show={gameLogic.gameState.isGameWon}
+        moves={gameLogic.gameState.moves}
+        timer={gameLogic.timer}
+        newGame={handleNewGame}
+      />
     </>
   );
 }
