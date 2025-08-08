@@ -1,29 +1,135 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {
+  createGameCards,
+  flipCard,
+  checkMatch,
+  isGameWon,
+} from "../utils/gameLogic";
 
 /** hook for handling the state management of the game
- * 
+ *
  * @param {Array} artPieces - list of art pieces fetched from the api
+ * @param {Boolean} isFullyLoaded - indicator whether all the images are loaded in or not
  * @returns gamestate and functions that are used for handling the changes of a state during any given game
  */
 export const useMemoryGame = (artPieces) => {
   const [gameState, setGameState] = useState({
     cards: [],
     flippedCards: [],
-    matchedPairs: [],
     moves: 0,
-    gameStatus: "playing",
-    canFlip: true,
+    isGameWon: false,
+    isGameStarted: false,
   });
 
-  const flipCard = (cardIdx) => {};
+  useEffect(() => {
+    if (artPieces) {
+      const gameCards = createGameCards(artPieces);
+      if (gameCards) {
+        setGameState({
+          cards: gameCards,
+          flippedCards: [],
+          moves: 0,
+          isGameWon: false,
+          isGameStarted: true,
+        });
+      }
+    }
+  }, [artPieces]);
 
-  const checkForMatch = () => {};
+  const handleCardClick = (cardIndex) => {
+    if (gameState.isGameWon || gameState.cards[cardIndex]?.isMatched) {
+      return;
+    }
 
-  const resetGame = () => {};
+    if (gameState.flippedCards.length == 2) {
+      const [firstCardIdx, secondCardIdx] = gameState.flippedCards;
+      const firstCard = gameState.cards[firstCardIdx];
+      const secondCard = gameState.cards[secondCardIdx];
 
-  const gameStats = () => {
-    return moves;
+      if (!firstCard.isMatched && !secondCard.isMatched) {
+        setGameState((prevState) => {
+          const updatedCards = [...prevState.cards];
+          updatedCards[firstCardIdx] = {
+            ...updatedCards[firstCardIdx],
+            isFlipped: false,
+          };
+          updatedCards[secondCardIdx] = {
+            ...updatedCards[secondCardIdx],
+            isFlipped: false,
+          };
+
+          return {
+            ...prevState,
+            cards: updatedCards,
+            flippedCards: [],
+          };
+        });
+
+        setTimeout(() => {
+          const newGameState = flipCard(cardIndex, {
+            ...gameState,
+            cards: gameState.cards.map((card, idx) =>
+              idx === firstCardIdx || idx === secondCardIdx
+                ? { ...card, isFlipped: false }
+                : card
+            ),
+            flippedCards: [],
+          });
+          setGameState((prevState) => ({
+            ...prevState,
+            ...newGameState,
+          }));
+        }, 50);
+        return;
+      }
+    }
+
+    if (gameState.cards[cardIndex]?.isFlipped) {
+      return;
+    }
+
+    const newGameState = flipCard(cardIndex, gameState);
+    setGameState(newGameState);
+
+    if (newGameState.flippedCards.length == 2) {
+      const [firstCardIdx, secondCardIdx] = newGameState.flippedCards;
+      const firstCard = newGameState.cards[firstCardIdx];
+      const secondCard = newGameState.cards[secondCardIdx];
+      const updatedMoves = newGameState.moves + 1;
+
+      if (checkMatch(firstCard, secondCard)) {
+        setGameState((prevState) => {
+          const updatedCards = [...prevState.cards];
+          updatedCards[firstCardIdx] = {
+            ...updatedCards[firstCardIdx],
+            isMatched: true,
+          };
+          updatedCards[secondCardIdx] = {
+            ...updatedCards[secondCardIdx],
+            isMatched: true,
+          };
+
+          const newState = {
+            ...prevState,
+            cards: updatedCards,
+            flippedCards: [],
+            isGameWon: isGameWon(updatedCards),
+            moves: updatedMoves,
+          };
+
+          return newState;
+        });
+      } else {
+        setGameState((prevState) => ({
+          ...prevState,
+          moves: updatedMoves,
+        }));
+      }
+    }
   };
 
-  return { gameState, flipCard, resetGame, checkForMatch, gameStats}
+  return {
+    gameState,
+    handleCardClick,
+  };
 };

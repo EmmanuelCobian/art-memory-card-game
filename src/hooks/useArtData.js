@@ -36,7 +36,7 @@ export const useArtData = () => {
       const artworks = await fetchRandomArtworks(artStyle, NUM_CARDS, numPages);
       if (!currentController.signal.aborted) {
         setArtPieces(artworks);
-        setTotalImages(artworks.length);
+        setTotalImages(artworks.length * 2);
       }
     } catch (err) {
       if (!currentController.signal.aborted) {
@@ -53,15 +53,6 @@ export const useArtData = () => {
 
   const handleImageError = () => {
     setImagesLoaded((prev) => prev + 1);
-  };
-
-  // TODO: this belongs in useMemoryGame
-  const handleCardClick = (index) => {
-    setArtPieces((prev) =>
-      prev.map((piece, idx) =>
-        idx === index ? { ...piece, flipped: !piece.flipped } : piece
-      )
-    );
   };
 
   useEffect(() => {
@@ -91,8 +82,7 @@ export const useArtData = () => {
     fetchArt,
     handleImageLoad,
     handleImageError,
-    handleCardClick,
-    isFullyLoaded: totalImages > 0 && imagesLoaded === totalImages && !loading,
+    isFullyLoaded: totalImages > 0 && imagesLoaded == totalImages && !loading,
     loadingProgress: totalImages > 0 ? (imagesLoaded / totalImages) * 100 : 0,
   };
 };

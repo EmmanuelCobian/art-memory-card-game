@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://api.artic.edu/api/v1';
+const API_BASE_URL = "https://api.artic.edu/api/v1";
 const USER_AGENT = `art-card-game (${import.meta.env.CONTACT_EMAIL})`;
 
 /**
@@ -49,19 +49,11 @@ export const fetchRandomArtworks = async (artStyle, cardNum, totalPages) => {
     }
 
     const res = await response.json();
-    const imagePromises = res.data.map(artwork => fetchArtworkDetails(artwork));
+    const imagePromises = res.data.map((artwork) =>
+      fetchArtworkDetails(artwork)
+    );
     const imageResults = await Promise.all(imagePromises);
-    const validImages = imageResults.filter(image => image !== null);
-    
-    const pairedCards = validImages.flatMap((img, idx) => [
-      { imageURL: img, flipped: false, matchId: idx },
-      { imageURL: img, flipped: false, matchId: idx }
-    ]);
-    const shuffledCards = pairedCards
-      .map(card => ({ ...card, id: Math.random() }))
-      .sort(() => Math.random() - 0.5)
-      .map((card, idx) => ({ ...card, id: idx }));
-    return shuffledCards;
+    return imageResults.filter((image) => image !== null);
   } catch (err) {
     console.error("Error in fetchRandomArtworks:", err);
     throw err;
@@ -83,7 +75,7 @@ export const fetchArtworkCount = async (artStyle, cardNum) => {
         "AIC-User_Agent": USER_AGENT,
       },
     });
-    
+
     if (!response.ok) {
       throw new Error(`Failed to fetch artworks: ${response.status}`);
     }
