@@ -21,6 +21,7 @@ function VictoryModal({ show, newGame, moves, timer }) {
             <Badge bg="info" className="ms-2">
               Time: {timer?.formattedTime || "00:00"}
             </Badge>
+            
           </Stack>
         </Modal.Title>
       </Modal.Header>

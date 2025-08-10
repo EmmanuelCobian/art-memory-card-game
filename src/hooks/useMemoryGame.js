@@ -6,13 +6,14 @@ import {
   isGameWon,
 } from "../utils/gameLogic";
 import { useTimer } from "./useTimer";
+import { clearScores, getScores, saveScore } from "../utils/scoreManager";
 
 /** hook for handling the state management of the game
  *
  * @param {Array} artPieces - list of art pieces fetched from the api
  * @param {Boolean} isFullyLoaded - whether all the images are loaded in or not
  * @returns game state and control functions
-*/
+ */
 export const useMemoryGame = (artPieces, isFullyLoaded) => {
   const [gameState, setGameState] = useState({
     cards: [],
@@ -35,6 +36,12 @@ export const useMemoryGame = (artPieces, isFullyLoaded) => {
       }
     }
   }, [artPieces]);
+
+  useEffect(() => {
+    if (gameState.isGameWon && gameState.moves > 0 && timer.time > 0) {
+      saveScore(gameState.moves, timer.time);
+    }
+  }, [gameState.isGameWon, gameState.moves, timer.time]);
 
   const handleCardClick = (cardIndex) => {
     if (!isFullyLoaded) {
