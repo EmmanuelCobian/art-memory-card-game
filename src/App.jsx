@@ -1,5 +1,4 @@
 import "./App.css";
-import GameHeader from "./components/GameHeader";
 import GameBoard from "./components/GameBoard";
 import { useMemoryGame } from "./hooks/useMemoryGame";
 import { useArtData } from "./hooks/useArtData";
@@ -35,7 +34,7 @@ function App() {
         >
           <Linkedin className="fs-2 me-2" color="#A2AF9B" />
         </a>
-        <a className="socials" href="mailto:emmanuel12310@berkeley.edu">
+        <a className="socials" href={`mailto:${import.meta.env.CONTACT_EMAIL}`}>
           <EnvelopeFill className="fs-2" color="#A2AF9B" />
         </a>
       </footer>
