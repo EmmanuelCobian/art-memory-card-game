@@ -39,7 +39,8 @@ export const useMemoryGame = (artPieces, isFullyLoaded) => {
 
   useEffect(() => {
     if (gameState.isGameWon && gameState.moves > 0 && timer.time > 0) {
-      saveScore(gameState.moves, timer.time);
+      saveScore(gameState.moves, timer);
+      console.log("scores:", getScores())
     }
   }, [gameState.isGameWon, gameState.moves, timer.time]);
 

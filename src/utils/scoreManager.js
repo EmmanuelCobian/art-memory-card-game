@@ -3,7 +3,7 @@
  */
 
 const SCORES_KEY = "top-scores";
-const MAX_SCORES = 5;
+const MAX_SCORES = 3;
 
 export const calculateScore = (moves, time) => {
   const baseScore = 10000;
@@ -11,12 +11,13 @@ export const calculateScore = (moves, time) => {
   return score;
 };
 
-export const saveScore = (moves, time) => {
+export const saveScore = (moves, timer) => {
   let scores = getScores();
   scores.push({
-    score: calculateScore(moves, time),
+    score: calculateScore(moves, timer.time),
     moves: moves,
-    time: time,
+    time: timer.time,
+    formattedTime: timer.formattedTime
   });
   scores.sort((a, b) => b.score - a.score);
   scores = scores.slice(0, MAX_SCORES);
@@ -29,10 +30,10 @@ export const getScores = () => {
 
 export const isTopScore = (score) => {
   const scores = getScores();
-  if (scores.length < MAX_SCORES) {
+  if (scores.length == 0) {
     return true;
   }
-  return score > Math.min(...scores.map((s) => s.score));
+  return score > Math.max(...scores.map((s) => s.score));
 };
 
 export const clearScores = () => {
