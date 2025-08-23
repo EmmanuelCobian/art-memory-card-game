@@ -62,6 +62,10 @@ export const useMemoryGame = (artPieces, isFullyLoaded) => {
       const firstCard = gameState.cards[firstCardIdx];
       const secondCard = gameState.cards[secondCardIdx];
 
+      if (cardIndex == firstCardIdx || cardIndex == secondCardIdx) {
+        return;
+      }
+
       if (!firstCard.isMatched && !secondCard.isMatched) {
         setGameState((prevState) => {
           const updatedCards = [...prevState.cards];
