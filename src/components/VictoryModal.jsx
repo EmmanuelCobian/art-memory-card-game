@@ -25,17 +25,17 @@ function VictoryModal({ show, newGame, moves, timer }) {
       <Modal.Header>
         <Modal.Title className="mx-auto w-100">
           <Stack className="text-center py-3">
-            <h1>🏆</h1>
+            <div className="victory-emoji">🏆</div>
             <h1>You Win!</h1>
           </Stack>
           <Stack direction="horizontal" className="pt-4">
-            <Badge bg="success">
+            <Badge bg="success" className="me-2">
               Score: {score}
             </Badge>
-            <Badge bg="primary" className="ms-auto">Moves: {moves}</Badge>
-            <Badge bg="info" className="ms-2">
-              Time: {timer?.formattedTime || "00:00"}
+            <Badge bg="primary" className="ms-auto">
+              Moves: {moves}
             </Badge>
+            <Badge bg="info" className="ms-2">Time: {timer?.formattedTime || "00:00"}</Badge>
           </Stack>
         </Modal.Title>
       </Modal.Header>
@@ -65,8 +65,13 @@ function VictoryModal({ show, newGame, moves, timer }) {
           </tbody>
         </Table>
 
-        <div className="text-center">
-          <Button variant="primary" size="lg" onClick={newGame}>
+        <div className="text-center pt-4">
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={newGame}
+            className="button-primary"
+          >
             Play Again
           </Button>
         </div>

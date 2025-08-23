@@ -10,15 +10,28 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --bg-primary: #FAF9EE;
+  --color-1: #4a3931;
+  --color-2: #7e5d50;
+  --color-3: #9d755c;
+  --color-4: #94807a;
+  --color-5: #d7d0cd;
+  
+  --bg-primary: #eeee;
   --bg-secondary: #ffffff;
-  --card-front: #A2AF9B;
-  --card-back: #ffffff;
-  --text-primary: #213547;
+  --bg-tertiary: var(--color-2);
+  --text-primary: var(--color-1);
   --text-secondary: #6c757d;
-  --accent-color: #DCCFC0;
-  --border-color: #dee2e6;
-  --shadow-color: rgba(0, 0, 0, 0.1);
+  --text-light: #ffffff;
+  --accent-color: var(--color-4);
+  --highlight-color: var(--color-5);
+  --card-front: var(--color-1);
+  --card-back: var(--color-2);
+  --border-color: var(--color-2);
+  /* --shadow-color: rgba(0, 0, 0, 0.15); */
+  --shadow-color: var(--color-1);
+  --success-color: var(--color-2);
+  --warning-color: var(--color-4);
+  --danger-color: #dc3545;
 }
 
 a {
@@ -41,7 +54,14 @@ body {
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
-  color: var(--text-primary);
+  color: var(--color-1);
+  margin-bottom: 1.5rem;
+}
+
+h2,
+h3 {
+  color: var(--color-2);
+  margin-bottom: 1rem;
 }
 
 p {

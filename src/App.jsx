@@ -25,17 +25,17 @@ function App() {
           href="https://github.com/EmmanuelCobian"
           target="_blank"
         >
-          <Github className="fs-2 me-2" color="#A2AF9B" />
+          <Github className="fs-2 me-2" color="#4a3931" />
         </a>
         <a
           className="socials"
           href="https://www.linkedin.com/in/emmanuel-cobian/"
           target="_blank"
         >
-          <Linkedin className="fs-2 me-2" color="#A2AF9B" />
+          <Linkedin className="fs-2 me-2" color="#4a3931" />
         </a>
         <a className="socials" href={`mailto:${import.meta.env.CONTACT_EMAIL}`}>
-          <EnvelopeFill className="fs-2" color="#A2AF9B" />
+          <EnvelopeFill className="fs-2" color="#4a3931" />
         </a>
       </footer>
     </>

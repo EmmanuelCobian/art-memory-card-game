@@ -23,12 +23,13 @@ function ThemeSelector({ show, onHide, artStyles, artStyle, onClick }) {
         <Container>
           <Row>
             {artStyles.map((style, idx) => (
-              <Col key={idx} xs={6}>
-                <Button 
-                  onClick={(e) => handleThemeClick(e)} 
+              <Col key={idx} xs={6} className="mb-3">
+                <Button
+                  onClick={(e) => handleThemeClick(e)}
                   value={style}
-                  variant={artStyle === style ? "dark" : "outline-dark"}
-                  className={`mb-2 w-100 ${artStyle === style ? "active" : ""}`}
+                  className={`w-100 h-100 py-3 button ${
+                    artStyle === style ? "button-primary" : "button-secondary"
+                  }`}
                 >
                   {style}
                 </Button>

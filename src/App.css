@@ -15,28 +15,31 @@ body {
 
 .game-container {
   max-width: 650px;
-  background-color: var(--bg-secondary);
-  border-radius: 15px;
-  padding-top: 1rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  box-shadow: 0 4px 6px var(--shadow-color);
+  border-radius: 20px;
+  padding: 2rem 1.5rem;
+  border: 2px solid var(--border-color);
+  margin: 0 auto;
 }
 
 .art-card {
   width: 100%;
   aspect-ratio: 1;
-  border-radius: 10px;
+  border-radius: 15px;
   overflow: hidden;
   cursor: pointer;
   min-height: 100px;
-  box-shadow: 0 2px 4px var(--shadow-color);
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .art-card-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
   height: 100%;
-  position: relative;
   transition: transform 0.6s;
   transform-style: preserve-3d;
 }
@@ -44,30 +47,30 @@ body {
 .art-card-front,
 .art-card-back {
   position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
 .art-card-front {
-  background-color: var(--card-front);
+  background: linear-gradient(135deg, var(--card-front), var(--color-2));
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
   font-size: 2rem;
   font-weight: bold;
+  position: relative;
 }
 
 .art-card-back {
   transform: rotateY(180deg);
-  background-color: var(--card-back);
-}
-
-.art-card.flipped .art-card-inner {
-  transform: rotateY(180deg);
+  background: linear-gradient(135deg, var(--card-back), var(--color-3));
 }
 
 .art-image {
@@ -75,32 +78,244 @@ body {
   height: 100%;
   object-fit: cover;
   object-position: top;
+  border-radius: 10px;
+}
+
+.art-card.flipped .art-card-inner {
+  transform: rotateY(180deg);
 }
 
 .alert {
-  background-color: var(--bg-secondary) !important;
+  background: linear-gradient(
+    135deg,
+    var(--bg-secondary),
+    var(--bg-primary)
+  ) !important;
   color: var(--text-primary) !important;
-  border-color: var(--border-color) !important;
+  border: 2px solid var(--border-color) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 5px 15px var(--shadow-color) !important;
 }
 
 .button {
-  background-color: var(--accent-color) !important;
-  border-color: var(--border-color) !important;
-  color: white !important;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  padding: 0.8em 1.5em;
   font-size: 1em;
-  font-weight: 500;
+  font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  transition: 0.25s;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
-.button:hover {
-  background-color: var(--card-front) !important;
-  border-color: var(--card-front) !important;
-}
+
 .button:focus,
 .button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 3px solid var(--color-4);
+  outline-offset: 2px;
+}
+
+.button-primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-1),
+    var(--color-2)
+  ) !important;
+  border-color: var(--color-1) !important;
+  color: var(--text-light) !important;
+}
+
+.button-primary:hover {
+  background: linear-gradient(
+    135deg,
+    var(--color-2),
+    var(--color-1)
+  ) !important;
+  border-color: var(--color-2) !important;
+}
+
+.button-primary:disabled {
+  background: linear-gradient(135deg, #cccccc, #999999) !important;
+  border-color: #cccccc !important;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.button-secondary {
+  background: linear-gradient(
+    135deg,
+    var(--color-4),
+    var(--color-5)
+  ) !important;
+  border-color: var(--color-4) !important;
+  color: var(--text-light) !important;
+}
+
+.button-secondary:hover {
+  background: linear-gradient(
+    135deg,
+    var(--color-5),
+    var(--color-4)
+  ) !important;
+  border-color: var(--color-5) !important;
+}
+
+.game-header {
+  background: linear-gradient(135deg, var(--color-1), var(--color-2));
+  border-radius: 15px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.game-header p {
+  color: var(--text-light);
+  font-weight: 600;
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.modal-content {
+  border-radius: 20px !important;
+  border: 2px solid var(--color-2) !important;
+}
+
+.modal-header {
+  background: linear-gradient(
+    45deg,
+    var(--color-1),
+    var(--color-2)
+  ) !important;
+  border-radius: 18px 18px 0 0 !important;
+}
+
+.modal-title {
+  color: var(--text-light) !important;
+}
+
+.badge {
+  border-radius: 20px !important;
+  padding: 0.6em 1em !important;
+  font-weight: 600 !important;
+  font-size: 0.9rem !important;
+}
+
+.table {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+.table thead th {
+  background: linear-gradient(
+    135deg,
+    var(--color-1),
+    var(--color-2)
+  ) !important;
+  color: var(--text-light) !important;
+  border: none !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+.table tbody td {
+  border-color: var(--color-2) !important;
+  padding: 1rem !important;
+  font-weight: 500 !important;
+}
+
+.victory-emoji {
+  font-size: 4rem;
+  animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@media (max-width: 768px) {
+  .game-container {
+    margin: 0.5rem;
+    padding: 1rem;
+  }
+
+  .game-header {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .game-header .stack-horizontal {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .game-header p {
+    font-size: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  .button {
+    padding: 0.7em 1.2em;
+    font-size: 0.9rem;
+  }
+
+  .art-card-front::after {
+    font-size: 2rem;
+  }
+
+  .art-card-front::before {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .game-container {
+    border-radius: 15px;
+    margin: 0.25rem;
+    padding: 0.75rem;
+  }
+
+  .game-header {
+    border-radius: 10px;
+    padding: 0.75rem;
+  }
+
+  .button {
+    padding: 0.6em 1em;
+    font-size: 0.85rem;
+  }
+
+  .victory-emoji {
+    font-size: 3rem;
+  }
+}
+
+@keyframes loading {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+.button:disabled {
+  animation: loading 1.5s ease-in-out infinite;
 }

@@ -15,35 +15,40 @@ function GameHeader({
 
   return (
     <>
-      <Stack direction="horizontal" gap={3}>
-        <button className="button" onClick={() => setModalShow(true)}>
-          Themes
-        </button>
+      <div className="game-header">
+        <Stack direction="horizontal" gap={3} className="align-items-center">
+          <button
+            className="button button-primary"
+            onClick={() => setModalShow(true)}
+          >
+            🎨 Themes
+          </button>
 
-        <ThemeSelector
-          show={modalShow}
-          onHide={() => setModalShow(false)}
-          artStyles={ART_STYLE_TYPES}
-          artStyle={artStyle}
-          onClick={onStyleChange}
-        />
+          <ThemeSelector
+            show={modalShow}
+            onHide={() => setModalShow(false)}
+            artStyles={ART_STYLE_TYPES}
+            artStyle={artStyle}
+            onClick={onStyleChange}
+          />
 
-        <button
-          onClick={handleGameRestart}
-          disabled={!isFullyLoaded}
-          className="my-3 button"
-        >
-          {isFullyLoaded ? "Restart" : "Loading..."}
-        </button>
+          <button
+            onClick={handleGameRestart}
+            disabled={!isFullyLoaded}
+            className="button button-secondary"
+          >
+            {isFullyLoaded ? "🔄 Restart" : "⏳ Loading..."}
+          </button>
 
-        <div className="ms-auto mt-3">
-          <p>Moves: {moves}</p>
-        </div>
+          <div className="ms-auto">
+            <p>🎯 Moves: {moves}</p>
+          </div>
 
-        <div className="mt-3">
-          <p>Timer: {timer?.formattedTime || "00:00"}</p>
-        </div>
-      </Stack>
+          <div>
+            <p>⏱️ Timer: {timer?.formattedTime || "00:00"}</p>
+          </div>
+        </Stack>
+      </div>
     </>
   );
 }
