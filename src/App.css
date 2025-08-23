@@ -207,13 +207,8 @@ body {
 }
 
 .table thead th {
-  background: linear-gradient(
-    135deg,
-    var(--color-1),
-    var(--color-2)
-  ) !important;
+  background: var(--color-1);
   color: var(--text-light) !important;
-  border: none !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
   letter-spacing: 0.5px !important;
