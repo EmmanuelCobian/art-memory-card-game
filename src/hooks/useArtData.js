@@ -33,7 +33,12 @@ export const useArtData = () => {
       const numPages = await fetchArtworkCount(artStyle, NUM_CARDS);
       if (currentController.signal.aborted) return;
 
-      const artworks = await fetchRandomArtworks(artStyle, NUM_CARDS, numPages);
+      let artworks = await fetchRandomArtworks(artStyle, NUM_CARDS, numPages);
+      while (artworks.length != NUM_CARDS) {
+        console.log("GETTING MORE ARTWORKS")
+        artworks = await fetchRandomArtworks(artStyle, NUM_CARDS, numPages)
+        console.log(artworks.length)
+      }
       if (!currentController.signal.aborted) {
         setArtPieces(artworks);
         setTotalImages(artworks.length * 2);
