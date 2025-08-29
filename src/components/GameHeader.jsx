@@ -1,6 +1,7 @@
 import ThemeSelector from "./ThemeSelector";
 import Stack from "react-bootstrap/Stack";
 import { useState } from "react";
+import { Palette, Stopwatch, ArrowRepeat, HourglassSplit, Cursor } from "react-bootstrap-icons";
 
 function GameHeader({
   onStyleChange,
@@ -21,7 +22,7 @@ function GameHeader({
             className="button button-primary"
             onClick={() => setModalShow(true)}
           >
-            🎨 Themes
+            <Palette /> Themes
           </button>
 
           <ThemeSelector
@@ -37,15 +38,15 @@ function GameHeader({
             disabled={!isFullyLoaded}
             className="button button-secondary"
           >
-            {isFullyLoaded ? "🔄 Restart" : "⏳ Loading..."}
+            {isFullyLoaded ? <><ArrowRepeat /> Restart</> : <><HourglassSplit /> Loading...</>}
           </button>
 
           <div className="ms-auto">
-            <p>🎯 Moves: {moves}</p>
+            <p><Cursor /> Moves: {moves}</p>
           </div>
 
           <div>
-            <p>⏱️ Timer: {timer?.formattedTime || "00:00"}</p>
+            <p><Stopwatch /> Timer: {timer?.formattedTime || "00:00"}</p>
           </div>
         </Stack>
       </div>
