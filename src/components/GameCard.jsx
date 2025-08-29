@@ -13,7 +13,7 @@ function GameCard({ card, idx, handleCardClick, handleImageError, handleImageLoa
             <img
               src={card.imageURL}
               crossOrigin="anonymous"
-              alt={`Artwork ${idx + 1}`}
+              alt={`Card ${card.pairId}`}
               className="art-image"
               onLoad={handleImageLoad}
               onError={handleImageError}
