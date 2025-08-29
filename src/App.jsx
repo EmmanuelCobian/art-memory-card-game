@@ -2,7 +2,7 @@ import "./App.css";
 import GameBoard from "./components/GameBoard";
 import { useMemoryGame } from "./hooks/useMemoryGame";
 import { useArtData } from "./hooks/useArtData";
-import { EnvelopeFill, Github, Linkedin } from "react-bootstrap-icons";
+import { Globe, Github, Linkedin } from "react-bootstrap-icons";
 
 function App() {
   const artData = useArtData();
@@ -34,8 +34,12 @@ function App() {
         >
           <Linkedin className="fs-2 me-2" color="#4a3931" />
         </a>
-        <a className="socials" href={`mailto:${import.meta.env.CONTACT_EMAIL}`}>
-          <EnvelopeFill className="fs-2" color="#4a3931" />
+        <a
+          className="socials"
+          href="https://emmanuelcobian.vercel.app"
+          target="_blank"
+        >
+          <Globe className="fs-2" color="#4a3931" />
         </a>
       </footer>
     </>
