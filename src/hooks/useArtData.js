@@ -35,9 +35,7 @@ export const useArtData = () => {
 
       let artworks = await fetchRandomArtworks(artStyle, NUM_CARDS, numPages);
       while (artworks.length != NUM_CARDS) {
-        console.log("GETTING MORE ARTWORKS")
         artworks = await fetchRandomArtworks(artStyle, NUM_CARDS, numPages)
-        console.log(artworks.length)
       }
       if (!currentController.signal.aborted) {
         setArtPieces(artworks);
