@@ -37,5 +37,5 @@ export const isTopScore = (score) => {
 };
 
 export const clearScores = () => {
-  localStorage.clear();
+  localStorage.removeItem(SCORES_KEY);
 };

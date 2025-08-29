@@ -43,107 +43,108 @@ export const useMemoryGame = (artPieces, isFullyLoaded) => {
     }
   }, [gameState.isGameWon, gameState.moves, timer.time]);
 
+  const canFlipCard = (cardIndex) => {
+    const card = gameState.cards[cardIndex];
+    const gameOver = gameState.isGameWon;
+    const alreadyMatched = card?.isMatched;
+    const alreadyFlipped = card?.isFlipped;
+    const maxFlipsReached =
+      gameState.flippedCards.length === 2 &&
+      gameState.flippedCards.includes(cardIndex);
+    return (
+      isFullyLoaded &&
+      !gameOver &&
+      !alreadyMatched &&
+      !alreadyFlipped &&
+      !maxFlipsReached
+    );
+  };
+
+  const createResetState = (gameState, firstCardIdx, secondCardIdx) => {
+    return {
+      ...gameState,
+      cards: gameState.cards.map((card, idx) =>
+        idx === firstCardIdx || idx === secondCardIdx
+          ? { ...card, isFlipped: false }
+          : card
+      ),
+      flippedCards: [],
+    };
+  };
+
+  const handleTwoCardsAlreadyFlipped = (cardIndex) => {
+    const [firstCardIdx, secondCardIdx] = gameState.flippedCards;
+    const firstCard = gameState.cards[firstCardIdx];
+    const secondCard = gameState.cards[secondCardIdx];
+
+    if (!firstCard.isMatched && !secondCard.isMatched) {
+      const resetState = createResetState(
+        gameState,
+        firstCardIdx,
+        secondCardIdx
+      );
+      const newGameState = flipCard(cardIndex, resetState);
+      setGameState(newGameState);
+      return true;
+    }
+    return false;
+  };
+
+  const markCardsAsMatched = (firstCardIdx, secondCardIdx, moves) => {
+    setGameState((prevState) => {
+      const updatedCards = [...prevState.cards];
+      updatedCards[firstCardIdx] = {
+        ...updatedCards[firstCardIdx],
+        isMatched: true,
+      };
+      updatedCards[secondCardIdx] = {
+        ...updatedCards[secondCardIdx],
+        isMatched: true,
+      };
+      const newState = {
+        ...prevState,
+        cards: updatedCards,
+        flippedCards: [],
+        isGameWon: isGameWon(updatedCards),
+        moves: moves,
+      };
+      return newState;
+    });
+  };
+
+  const updateMovesOnly = (moves) => {
+    setGameState((prevState) => ({
+      ...prevState,
+      moves: moves,
+    }));
+  };
+
+  const handleTwoCardsFlipped = (newGameState) => {
+    const [firstCardIdx, secondCardIdx] = newGameState.flippedCards;
+    const firstCard = newGameState.cards[firstCardIdx];
+    const secondCard = newGameState.cards[secondCardIdx];
+    const updatedMoves = newGameState.moves + 1;
+
+    if (checkMatch(firstCard, secondCard)) {
+      markCardsAsMatched(firstCardIdx, secondCardIdx, updatedMoves);
+    } else {
+      updateMovesOnly(updatedMoves);
+    }
+  };
+
   const handleCardClick = (cardIndex) => {
-    if (!isFullyLoaded) {
-      return;
-    }
+    if (!canFlipCard(cardIndex)) return;
 
-    if (gameState.isGameWon || gameState.cards[cardIndex]?.isMatched) {
-      return;
-    }
-
-    if (gameState.moves == 0) {
-      timer.startTimer();
-    }
+    if (gameState.moves == 0) timer.startTimer();
 
     if (gameState.flippedCards.length == 2) {
-      const [firstCardIdx, secondCardIdx] = gameState.flippedCards;
-      const firstCard = gameState.cards[firstCardIdx];
-      const secondCard = gameState.cards[secondCardIdx];
-
-      if (cardIndex == firstCardIdx || cardIndex == secondCardIdx) {
-        return;
-      }
-
-      if (!firstCard.isMatched && !secondCard.isMatched) {
-        setGameState((prevState) => {
-          const updatedCards = [...prevState.cards];
-          updatedCards[firstCardIdx] = {
-            ...updatedCards[firstCardIdx],
-            isFlipped: false,
-          };
-          updatedCards[secondCardIdx] = {
-            ...updatedCards[secondCardIdx],
-            isFlipped: false,
-          };
-
-          return {
-            ...prevState,
-            cards: updatedCards,
-            flippedCards: [],
-          };
-        });
-
-        setTimeout(() => {
-          const newGameState = flipCard(cardIndex, {
-            ...gameState,
-            cards: gameState.cards.map((card, idx) =>
-              idx === firstCardIdx || idx === secondCardIdx
-                ? { ...card, isFlipped: false }
-                : card
-            ),
-            flippedCards: [],
-          });
-          setGameState((prevState) => ({
-            ...prevState,
-            ...newGameState,
-          }));
-        }, 50);
-        return;
-      }
-    }
-
-    if (gameState.cards[cardIndex]?.isFlipped) {
-      return;
+      if (handleTwoCardsAlreadyFlipped(cardIndex)) return;
     }
 
     const newGameState = flipCard(cardIndex, gameState);
     setGameState(newGameState);
-
     if (newGameState.flippedCards.length == 2) {
-      const [firstCardIdx, secondCardIdx] = newGameState.flippedCards;
-      const firstCard = newGameState.cards[firstCardIdx];
-      const secondCard = newGameState.cards[secondCardIdx];
-      const updatedMoves = newGameState.moves + 1;
-
-      if (checkMatch(firstCard, secondCard)) {
-        setGameState((prevState) => {
-          const updatedCards = [...prevState.cards];
-          updatedCards[firstCardIdx] = {
-            ...updatedCards[firstCardIdx],
-            isMatched: true,
-          };
-          updatedCards[secondCardIdx] = {
-            ...updatedCards[secondCardIdx],
-            isMatched: true,
-          };
-
-          const newState = {
-            ...prevState,
-            cards: updatedCards,
-            flippedCards: [],
-            isGameWon: isGameWon(updatedCards),
-            moves: updatedMoves,
-          };
-
-          return newState;
-        });
-      } else {
-        setGameState((prevState) => ({
-          ...prevState,
-          moves: updatedMoves,
-        }));
-      }
+      handleTwoCardsFlipped(newGameState);
     }
   };
 
