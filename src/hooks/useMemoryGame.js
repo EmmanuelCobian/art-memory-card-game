@@ -6,7 +6,7 @@ import {
   isGameWon,
 } from "../utils/gameLogic";
 import { useTimer } from "./useTimer";
-import { clearScores, getScores, saveScore } from "../utils/scoreManager";
+import { saveScore } from "../utils/scoreManager";
 
 /** hook for handling the state management of the game
  *
