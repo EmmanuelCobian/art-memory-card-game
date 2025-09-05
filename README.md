@@ -55,7 +55,7 @@ An interactive memory card game built with React and Vite, featuring artwork fro
 3. Click cards to flip and match pairs.
 4. Track your moves and timer in the header.
 5. When you win, view your score and leaderboard in the victory modal.
-6. Restart or change theme at any time.=
+6. Restart or change theme at any time.
 ## Author
 
 [Emmanuel Cobian](https://github.com/EmmanuelCobian)
