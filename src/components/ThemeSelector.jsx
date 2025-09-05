@@ -16,7 +16,7 @@ function ThemeSelector({ show, onHide, artStyles, artStyle, onClick }) {
     >
       <Modal.Header closeButton onClick={onHide}>
         <Modal.Title id="contained-modal-title-vcenter">
-          Select A Theme
+          Select A Card Theme
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>

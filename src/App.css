@@ -119,20 +119,20 @@ body {
 .button-primary {
   background: linear-gradient(
     135deg,
-    var(--color-1),
-    var(--color-2)
+    var(--color-2),
+    var(--color-3)
   ) !important;
-  border-color: var(--color-1) !important;
+  border-color: var(--color-2) !important;
   color: var(--text-light) !important;
 }
 
 .button-primary:hover {
   background: linear-gradient(
     135deg,
-    var(--color-2),
-    var(--color-1)
+    var(--color-3),
+    var(--color-2)
   ) !important;
-  border-color: var(--color-2) !important;
+  border-color: var(--color-3) !important;
 }
 
 .button-primary:disabled {

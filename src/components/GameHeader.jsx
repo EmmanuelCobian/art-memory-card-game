@@ -22,7 +22,7 @@ function GameHeader({
             className="button button-primary"
             onClick={() => setModalShow(true)}
           >
-            <Palette /> Themes
+            <Palette /> Cards
           </button>
 
           <ThemeSelector
